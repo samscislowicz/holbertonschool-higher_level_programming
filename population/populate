@@ -1,0 +1,11 @@
+#!/bin/bash
+# Automated File Population for Holberton School Projects
+# By Tim Britton, last edited 11/Oct/2016
+# Use explained in README.md in folder
+
+c=$1
+if [ "$c" != '' ];then
+    cat $c|awk /"<li>File: <code>"/ | awk '{print $2}'| cut -d '>' -f2 | cut -d '<' -f1 | awk '{system("touch "$1"; chmod u+x "$1"; echo "$1" >> README.md ") }'
+else
+    echo "No argument given for populate."
+fi
