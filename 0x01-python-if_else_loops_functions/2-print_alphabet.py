@@ -1,3 +1,3 @@
 #!/usr/bin/python3
-string = 'abcdefghijklmnopqrstuvwxyz'
-print(string)
+for i in 'abcdefghijklmnopqrstuvwxyz':
+    print ('{:s}'.format(i), end='')
