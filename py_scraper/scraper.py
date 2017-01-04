@@ -89,6 +89,9 @@ def error_soup():
     if ("The project you requested is not available to you yet!" in soup.strings):
         print("Incorrect project number, not available.")
         exit()
+    if ('{"success":false,"message":"You need to sign in before."}' in soup.strings):
+        print("Incorrect login. Check that your cookies.txt is valid.")
+        exit()
 
 def usage_error():
     print("usage: {} projectnumber operation".format(sys.argv[0]))
@@ -137,6 +140,8 @@ elif (sys.argv[2] == 'directories'):
     print_directories()
 elif(sys.argv[2] == 'python'):
     pythonsource()
+elif(sys.argv[2] == 'all'):
+    print_all()
 else:
     usage_error()
 #print_all()
