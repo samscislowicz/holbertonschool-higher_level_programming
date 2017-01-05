@@ -14,22 +14,30 @@ def check_git():
             print("Incorrect git repo! Exiting.")
             exit()
 
+def get_name(task):
+    flag = 0
+    i = 0
+    for string in task.strings:
+        if (string == "File: "):
+            flag = 1
+        elif (flag == 1):
+            return(string)
+
 def get_fullname(task):
     flag = 0
     i = 0
-    fullnames = []
     for string in task.strings:
         if (string == "File: "):
             flag = 1
         elif (string == "Directory: "):
             flag = 2
         elif (flag == 1):
-            fullnames[-1] += string
+            fullname += string
             flag = 0
         elif (flag == 2):
-            fullnames.append(string + "/")
+            fullname = (string + "/")
             flag = 0
-    return fullnames
+    return fullname
 
 def print_fullname():
     for task in tasks:
@@ -49,15 +57,12 @@ def print_name():
 
 def get_directories(task):
     flag = 0
-    directories = []
     for string in task.strings:
         if (string == "Directory: "):
             flag = 1
         elif (flag == 1):
-            if (string not in directories):
-                directories.append(string)
+            return(string)
             flag = 0
-    return directories
 
 def print_directories():
     for task in tasks:
@@ -155,15 +160,29 @@ url += sys.argv[1]
 page = requests.get(url, cookies=cj)
 soup = BeautifulSoup(page.content, "lxml")
 tasks = soup.find_all('div', class_=" clearfix gap")
-#tasks = [ ]
 
-#class Project:
-#    def __init__(self, task):
-#        self.name = get_name(task)
-#        self.directory = get_directories(task)
-#        self.number = get_project_number(task)
+class Project:
+    def __init__(self, task):
+        self.name = get_name(task)
+        self.fullname = get_fullname(task)
+        self.directory = get_directories(task)
+        self.number = get_project_number(task)
+#       self.repository
+#       self.extra (mains inside project)
+
+def project_list():
+    projectlist = [ Project(task) for task in tasks ]
+    return projectlist
 
 
+plist = project_list()
+for project in plist:
+    print(project.number)
+    print(project.name)
+    print(project.fullname)
+    print(project.directory)
+    print('\n')
+exit()
 error_soup()
 if (sys.argv[2] == 'fullname'):
     print_fullname()
