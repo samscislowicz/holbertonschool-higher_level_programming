@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import sys
 import subprocess
+import re
 
 def check_git():
     try:
@@ -100,8 +101,28 @@ def usage_error():
     print("fullname - prints all filenames and the corresponding directory.")
     print("directories - gives a list of all directories used for the project.")
     print("touch - creates a folder (if needed) for each file, and creates a blank file for each.")
+    print("extra - creates any additional files (such as main files) and fills them in.")
     print("python - finds any linked Github python files and creates them")
     exit()
+
+def make_extra():
+    make_mains(direct)
+    exit()
+
+def make_mains(direct):
+    for string in soup.strings:
+        result = re.search('cat(.)*main.py', string)
+        if (result != None):
+            filename = string[result.start(0) + 4:result.end(0)]
+            if (filename != None):
+                filename = direct + filename
+            user = re.search('(.)*@ubuntu:(.)*', string)
+            string = string[user.end(2) + 2:]
+            user = re.search('(.)*@ubuntu:(.)*', string)
+            string = string[:user.start(0)]
+            newfile = open(filename, 'w')
+            newfile.write(string)
+
 
 if (len(sys.argv) < 3):
     usage_error()
@@ -125,11 +146,6 @@ soup = BeautifulSoup(page.content, "lxml")
 error_soup()
 tasks = soup.find_all(attrs={"tasks" : True})
 
-#pythonsource()
-
-#for link in soup:
-#    print(link)
-
 if (sys.argv[2] == 'fullname'):
     print_fullname()
 elif (sys.argv[2] == 'name'):
@@ -142,6 +158,8 @@ elif(sys.argv[2] == 'python'):
     pythonsource()
 elif(sys.argv[2] == 'all'):
     print_all()
+elif(sys.argv[2] == 'extra'):
+    make_extra(None)
 else:
     usage_error()
 #print_all()
