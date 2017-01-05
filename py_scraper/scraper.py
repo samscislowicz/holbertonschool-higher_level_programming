@@ -14,11 +14,11 @@ def check_git():
             print("Incorrect git repo! Exiting.")
             exit()
 
-def get_fullname():
+def get_fullname(task):
     flag = 0
     i = 0
     fullnames = []
-    for string in soup.strings:
+    for string in task.strings:
         if (string == "File: "):
             flag = 1
         elif (string == "Directory: "):
@@ -32,23 +32,25 @@ def get_fullname():
     return fullnames
 
 def print_fullname():
-    full = get_fullname()
-    for string in full:
-        print(string)
+    for task in tasks:
+        full = get_fullname(task)
+        for string in full:
+            print(string)
 
 def print_name():
     flag = 0
-    for string in soup.strings:
-        if (string == "File: "):
-            flag = 1
-        elif (flag == 1):
-            print(string)
-            flag = 0
+    for task in tasks:
+        for string in task.strings:
+            if (string == "File: "):
+                flag = 1
+            elif (flag == 1):
+                print(string)
+                flag = 0
 
-def get_directories():
+def get_directories(task):
     flag = 0
     directories = []
-    for string in soup.strings:
+    for string in task.strings:
         if (string == "Directory: "):
             flag = 1
         elif (flag == 1):
@@ -58,9 +60,10 @@ def get_directories():
     return directories
 
 def print_directories():
-    dirs = get_directories()
-    for string in dirs:
-        print(string)
+    for task in tasks:
+        dirs = get_directories(task)
+        for string in dirs:
+            print(string)
 
 def pythonsource():
     for a in soup.find_all("a", string="here"):
@@ -72,12 +75,14 @@ def pythonsource():
         print(source.text)
 
 def touch():
-    dirs = get_directories()
-    for each in dirs:
-        subprocess.call(["mkdir", each])
-    fullname = get_fullname()
-    for name in fullname:
-        subprocess.call(["touch", name])
+    for task in tasks:
+        dirs = get_directories(task)
+        for each in dirs:
+            if (os.path.isdir(each) != True):
+                subprocess.call(["mkdir", each])
+            fullname = get_fullname(task)
+            for name in fullname:
+                subprocess.call(["touch", name])
 
 def print_all():
     for string in soup.strings:
@@ -123,6 +128,12 @@ def make_mains(direct):
             newfile = open(filename, 'w')
             newfile.write(string)
 
+def get_project_number(task):
+    h4 = task.find('h4', class_="task")
+    text = h4.text
+    period = text.find('.')
+    num = int(text[5:period])
+    return (num)
 
 if (len(sys.argv) < 3):
     usage_error()
@@ -143,9 +154,17 @@ url += sys.argv[1]
 
 page = requests.get(url, cookies=cj)
 soup = BeautifulSoup(page.content, "lxml")
-error_soup()
-tasks = soup.find_all(attrs={"tasks" : True})
+tasks = soup.find_all('div', class_=" clearfix gap")
+#tasks = [ ]
 
+#class Project:
+#    def __init__(self, task):
+#        self.name = get_name(task)
+#        self.directory = get_directories(task)
+#        self.number = get_project_number(task)
+
+
+error_soup()
 if (sys.argv[2] == 'fullname'):
     print_fullname()
 elif (sys.argv[2] == 'name'):
@@ -160,6 +179,9 @@ elif(sys.argv[2] == 'all'):
     print_all()
 elif(sys.argv[2] == 'extra'):
     make_extra(None)
+elif(sys.argv[2] == 'number'):
+    for task in tasks:
+        print("{:d}".format(get_project_number(task)))
 else:
     usage_error()
 #print_all()
