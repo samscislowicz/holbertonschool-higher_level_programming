@@ -80,14 +80,10 @@ def pythonsource():
         print(source.text)
 
 def touch():
-    for task in tasks:
-        dirs = get_directories(task)
-        for each in dirs:
-            if (os.path.isdir(each) != True):
-                subprocess.call(["mkdir", each])
-            fullname = get_fullname(task)
-            for name in fullname:
-                subprocess.call(["touch", name])
+    for project in plist:
+        if (os.path.isdir(project.directory) != True):
+            subprocess.call(["mkdir", project.directory])
+        subprocess.call(["touch", project.fullname])
 
 def print_all():
     for string in soup.strings:
@@ -176,13 +172,13 @@ def project_list():
 
 
 plist = project_list()
-for project in plist:
-    print(project.number)
-    print(project.name)
-    print(project.fullname)
-    print(project.directory)
-    print('\n')
-exit()
+#for project in plist:
+#    print(project.number)
+#    print(project.name)
+#    print(project.fullname)
+#    print(project.directory)
+#    print('\n')
+#exit()
 error_soup()
 if (sys.argv[2] == 'fullname'):
     print_fullname()
