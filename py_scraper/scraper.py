@@ -40,10 +40,8 @@ def get_fullname(task):
     return fullname
 
 def print_fullname():
-    for task in tasks:
-        full = get_fullname(task)
-        for string in full:
-            print(string)
+    for project in plist:
+         print(project.fullname)
 
 def print_name():
     flag = 0
@@ -65,25 +63,45 @@ def get_directories(task):
             flag = 0
 
 def print_directories():
-    for task in tasks:
-        dirs = get_directories(task)
-        for string in dirs:
-            print(string)
+    dirs = []
+    for project in plist:
+        if project.directory not in dirs:
+            print (project.directory)
+            dirs.append(project.directory)
 
-def pythonsource():
-    for a in soup.find_all("a", string="here"):
+def pythonsource(project):
+    for a in project.task.find_all("a", string="here"):
         newline = a["href"]
         newline = "https://raw.githubusercontent.com/" + newline[19:]
         start = newline.rfind('/blob/')
         newline = newline[:start] + newline[start + 5:]
         source = requests.get(newline)
-        print(source.text)
+        newfile = open(project.fullname, 'w')
+        newfile.write(source.text)
+        return (True)
+    return (None)
 
 def touch():
     for project in plist:
         if (os.path.isdir(project.directory) != True):
             subprocess.call(["mkdir", project.directory])
         subprocess.call(["touch", project.fullname])
+        template = get_template(project)
+        if (template != None):
+            file = open(project.fullname, "w")
+            file.write(open(template, "r").read())
+        open(project.directory + "/README.md", "a").write(project.name + '\n')
+        pythonsource(project)
+        make_mains()
+
+def get_template(project):
+    if (re.search(".py$", project.name) != None):
+        return("templates/python.template")
+    if (re.search(".c$", project.name) != None):
+        return("templates/c.template")
+    if (re.search(".sh$", project.name) != None):
+        return("templates/bash.template")
+    return(None)
 
 def print_all():
     for string in soup.strings:
@@ -107,27 +125,28 @@ def usage_error():
     print("fullname - prints all filenames and the corresponding directory.")
     print("directories - gives a list of all directories used for the project.")
     print("touch - creates a folder (if needed) for each file, and creates a blank file for each.")
-    print("extra - creates any additional files (such as main files) and fills them in.")
-    print("python - finds any linked Github python files and creates them")
+    print("all - prints the whole HTML result from the project page (prettified)")
     exit()
 
-def make_extra():
-    make_mains(direct)
-    exit()
+def get_extra():
+    for task in tasks:
+        print(get_extra(task))
 
-def make_mains(direct):
-    for string in soup.strings:
-        result = re.search('cat(.)*main.py', string)
-        if (result != None):
-            filename = string[result.start(0) + 4:result.end(0)]
-            if (filename != None):
-                filename = direct + filename
-            user = re.search('(.)*@ubuntu:(.)*', string)
-            string = string[user.end(2) + 2:]
-            user = re.search('(.)*@ubuntu:(.)*', string)
-            string = string[:user.start(0)]
-            newfile = open(filename, 'w')
-            newfile.write(string)
+def make_mains():
+    for task in tasks:
+        for string in task.strings:
+            result = re.search('cat(.)*main.py', string)
+            if (result != None):
+                filename = string[result.start(0) + 4:result.end(0)]
+                if (filename != None):
+                    direct = get_directories(task)
+                    filename = direct + "/" + filename
+                    user = re.search('(.)*@ubuntu:(.)*', string)
+                    string = string[user.end(2) + 2:]
+                    user = re.search('(.)*@ubuntu:(.)*', string)
+                    string = string[:user.start(0)]
+                    newfile = open(filename, 'w')
+                    newfile.write(string)
 
 def get_project_number(task):
     h4 = task.find('h4', class_="task")
@@ -163,13 +182,14 @@ class Project:
         self.fullname = get_fullname(task)
         self.directory = get_directories(task)
         self.number = get_project_number(task)
+        self.task = task
+        self.type = "python"
 #       self.repository
 #       self.extra (mains inside project)
 
 def project_list():
     projectlist = [ Project(task) for task in tasks ]
     return projectlist
-
 
 plist = project_list()
 #for project in plist:
@@ -179,6 +199,10 @@ plist = project_list()
 #    print(project.directory)
 #    print('\n')
 #exit()
+
+for project in plist:
+        get_template(project)
+          
 error_soup()
 if (sys.argv[2] == 'fullname'):
     print_fullname()
@@ -188,15 +212,15 @@ elif (sys.argv[2] == 'touch'):
     touch()
 elif (sys.argv[2] == 'directories'):
     print_directories()
-elif(sys.argv[2] == 'python'):
-    pythonsource()
 elif(sys.argv[2] == 'all'):
-    print_all()
-elif(sys.argv[2] == 'extra'):
-    make_extra(None)
-elif(sys.argv[2] == 'number'):
-    for task in tasks:
-        print("{:d}".format(get_project_number(task)))
+    print(soup.prettify())
 else:
     usage_error()
 #print_all()
+
+
+# TODO:
+# Check for files before creating them
+# Warn that file exists and is not empty and give option to overwrite?
+# Append instead of write by default?
+# Figure out best way to handle this.
