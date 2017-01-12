@@ -21,7 +21,7 @@ def get_name(task):
         if (string == "File: "):
             flag = 1
         elif (flag == 1):
-            return(string)
+            return string.lstrip(' ')
 
 def get_fullname(task):
     flag = 0
@@ -32,12 +32,20 @@ def get_fullname(task):
         elif (string == "Directory: "):
             flag = 2
         elif (flag == 1):
-            fullname += string
+            fullname += string.lstrip()
             flag = 0
         elif (flag == 2):
-            fullname = (string + "/")
+            fullname = (string.lstrip() + "/")
             flag = 0
     return fullname
+
+def get_prototype(task):
+    flag = 0
+    for string in task.strings:
+        if (string == "Prototype: "):
+            flag = 1
+        elif (flag == 1):
+            return string.lstrip(' ')
 
 def print_fullname():
     for project in plist:
@@ -59,7 +67,7 @@ def get_directories(task):
         if (string == "Directory: "):
             flag = 1
         elif (flag == 1):
-            return(string)
+            return string.lstrip(' ')
             flag = 0
 
 def print_directories():
@@ -90,17 +98,19 @@ def touch():
         if (template != None):
             file = open(project.fullname, "w")
             file.write(open(template, "r").read())
+            if (project.prototype is not None):
+                file.write(project.prototype + '\n')
         open(project.directory + "/README.md", "a").write(project.name + '\n')
         pythonsource(project)
         make_mains()
 
 def get_template(project):
     if (re.search(".py$", project.name) != None):
-        return("templates/python.template")
+        return("/usr/include/scraper/templates/python.template")
     if (re.search(".c$", project.name) != None):
-        return("templates/c.template")
+        return("/usr/include/scraper/templates/c.template")
     if (re.search(".sh$", project.name) != None):
-        return("templates/bash.template")
+        return("/usr/include/scraper/templates/bash.template")
     return(None)
 
 def print_all():
@@ -142,7 +152,7 @@ def make_mains():
                     direct = get_directories(task)
                     filename = direct + "/" + filename
                     user = re.search('(.)*@ubuntu:(.)*', string)
-                    string = string[user.end(2) + 2:]
+                    string = string[user.end(2) + 1:]
                     user = re.search('(.)*@ubuntu:(.)*', string)
                     string = string[:user.start(0)]
                     newfile = open(filename, 'w')
@@ -182,6 +192,7 @@ class Project:
         self.fullname = get_fullname(task)
         self.directory = get_directories(task)
         self.number = get_project_number(task)
+        self.prototype = get_prototype(task)
         self.task = task
         self.type = "python"
 #       self.repository
