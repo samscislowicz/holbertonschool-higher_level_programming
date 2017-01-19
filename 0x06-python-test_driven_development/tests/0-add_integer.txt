@@ -1,10 +1,113 @@
-add_integer = __import__('0-add_integer').add_integer
+>>> add_integer = __import__('0-add_integer').add_integer
 
 >>> add_integer(1,2)
 3
 >>> add_integer(-2,4)
 2
->>> add_integer(g, 5)
+>>> add_integer(4, -2)
+2
+>>> add_integer("g", 5)
 Traceback (most recent call last):
 	  ...
 TypeError: a must be an integer
+
+>>> add_integer(10.3, 5)
+15
+
+>>> add_integer(5, 10.3)
+15
+
+>>> add_integer(5, "g")
+Traceback (most recent call last):
+	  ...
+TypeError: b must be an integer
+
+>>> add_integer("python", "python")
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer("3", "python")
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer("python", "3")
+Traceback (most recent call last):
+	  ...
+TypeError: b must be an integer
+
+>>> add_integer(None, 2)
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer(2, None)
+Traceback (most recent call last):
+	  ...
+TypeError: b must be an integer
+
+>>> add_integer(None, None)
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer([1,2,3], 3)
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer(3, [1,2,3])
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer([1,2,3], [1,2,3])
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer({a:2}, 4)
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer(4, {a:c})
+Traceback (most recent call last):
+	  ...
+TypeError: b must be an integer
+
+>>> add_integer({a:3}, {b:c})
+Traceback (most recent call last):
+	  ...
+TypeError: a must be an integer
+
+>>> add_integer(float("inf"), 2)
+Traceback (most recent call last):
+	  ...
+OverflowError: cannot convert float infinity to integer
+
+>>> add_integer(3, float("inf"))
+Traceback (most recent call last):
+	  ...
+OverflowError: cannot convert float infinity to integer
+
+>>> add_integer(float("inf"), float("inf"))
+Traceback (most recent call last):
+	  ...
+OverflowError: cannot convert float infinity to integer
+
+>>> add_integer()
+Traceback (most recent call last):
+	  ...
+TypeError: add_integer() missing 2 required positional arguments: 'a' and 'b'
+
+>>> add_integer(2,)
+Traceback (most recent call last):
+	  ...
+TypeError: add_integer() missing 1 required positional argument: 'b'
+
+>>> add_integer(,5)
+Traceback (most recent call last):
+	  ...
+TypeError: add_integer() missing 1 required positional argument: 'a'
