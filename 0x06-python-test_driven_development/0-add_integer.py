@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """
-
+This module holds the function add_integer that adds two integers
 """
+
+
 def add_integer(a, b):
     """Returns a + b as int.
 
