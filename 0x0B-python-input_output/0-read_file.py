@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+"""
+Input output module
+"""
+
+
 def read_file(filename=""):
     """
     Read a file with a with statement

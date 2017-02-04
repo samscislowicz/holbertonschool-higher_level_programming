@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+"""
+Input/ output module
+"""
+
+
 def number_of_lines(filename=""):
     """
     Number of lines in a file function
