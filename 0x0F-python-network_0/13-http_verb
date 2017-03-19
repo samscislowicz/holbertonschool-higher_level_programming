@@ -1,0 +1,3 @@
+#!/bin/bash
+# which HTTP verb is used?
+GET
