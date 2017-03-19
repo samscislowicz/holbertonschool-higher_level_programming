@@ -1,25 +1,11 @@
 #!/usr/bin/python3
 import requests
 import sys
-if __name__ == "__main__":
-    url = 'https://swapi.co/api/people/?search=r2'
 
-    if len(sys.argv) == 1:
-        print("No result")
-    if len(sys.argv) > 1 and sys.argv[1].isdigit():
-        print("No result")
-    elif len(sys.argv) < 2:
-            letter = ""
-    else:
-        letter = sys.argv[1]
-        payload = {'q': letter}
-        r = requests.post(url, data=payload)
-        try:
-            response = r.json()
-            if response.get("id") is None:
-                print("No result")
-            else:
-                print("[{}] {}".format(response.get("id"),
-                                       response.get("name")))
-        except:
-            print("Not a valid JSON")
+if __name__ == "__main__":
+    search = sys.argv[1]
+    url = "https://swapi.co/api/people/?search=" + search
+    r = requests.get(url)
+    response = dict(r.json())
+    print("Number of result: {}".format(response.get(count)))
+    print(response.get("name"))
