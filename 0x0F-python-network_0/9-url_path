@@ -1,0 +1,3 @@
+#!/bin/bash
+# Whats the resource path?
+v1/auth/new
