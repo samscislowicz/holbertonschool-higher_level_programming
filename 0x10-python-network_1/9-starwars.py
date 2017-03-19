@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+"""
+
+"""
 import requests
 import sys
 
@@ -8,4 +11,5 @@ if __name__ == "__main__":
     r = requests.get(url)
     response = dict(r.json())
     print("Number of result: {}".format(response.get(count)))
-    print(response.get("name"))
+    for name in response.get("results"):
+        print(response.get("name"))
