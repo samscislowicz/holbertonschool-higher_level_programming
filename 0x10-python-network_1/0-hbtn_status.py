@@ -7,4 +7,4 @@ print("""Body response:
 \t- type: {}
 \t- content: {}
 \t- utf8 content: {:s}""".format(type(html), html,
-                                   html.decode(encoding='UTF-8')))
+                                 html.decode(encoding='UTF-8')))
