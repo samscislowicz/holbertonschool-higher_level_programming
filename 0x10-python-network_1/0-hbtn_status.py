@@ -8,5 +8,5 @@ with urllib.request.urlopen('http://intranet.hbtn.io/status') as response:
     print("""Body response:
     - type: {}
     - content: {}
-    - utf8 content: {:}""".format(type(html), html,
+    - utf8 content: {}""".format(type(html), html,
                                   html.decode(encoding='UTF-8')))
