@@ -1,4 +1,5 @@
 #!/usr/bin/node
+// Style comment?
 exports.Rectangle = function Rectangle (w, h) {
   if (w <= 0) {
     let w = {};
