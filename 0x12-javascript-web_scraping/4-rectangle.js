@@ -19,7 +19,7 @@ exports.Rectangle = function Rectangle (w, h) {
     this.width = h;
   };
   this.double = function () {
-    this.height = h *= 2;
-    this.width = w *= 2;
+    this.height *= 2;
+    this.width *= 2;
   };
 };
