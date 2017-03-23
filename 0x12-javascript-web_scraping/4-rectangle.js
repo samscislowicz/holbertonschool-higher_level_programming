@@ -1,10 +1,10 @@
 #!/usr/bin/node
 exports.Rectangle = function Rectangle (w, h) {
   if (w <= 0) {
-      return;
+    return;
   }
   if (h <= 0) {
-      return;
+    return;
   } else {
     this.width = w;
     this.height = h;
