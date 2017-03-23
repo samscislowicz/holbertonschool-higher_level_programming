@@ -1,8 +1,6 @@
 #!/usr/bin/node
-
-var request = require('request');
+let request = require('request');
 const url = process.argv[2];
-
 request(url, function (err, res, body) {
     if (err) {
 	return console.log(err);
