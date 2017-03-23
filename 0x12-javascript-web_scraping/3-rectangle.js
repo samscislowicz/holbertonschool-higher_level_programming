@@ -2,10 +2,10 @@
 // Style comment?
 exports.Rectangle = function Rectangle (w, h) {
   if (w <= 0) {
-    let w = {};
+      return;
   }
   if (h <= 0) {
-    let h = {};
+      return;
   } else {
     this.width = w;
     this.height = h;
